@@ -1,2 +1,0 @@
-C:\work\sample_code\C++\modern C++\SpriteRipper\Release\SpriteRipper.exe
-C:\work\sample_code\C++\modern C++ SpriteRipper\SpriteRipper\Release\SpriteRipper.exe
