@@ -8,8 +8,10 @@ class bitBufferClass {
             unsigned long capacityInBytes;
             unsigned long capacityInBits;
             unsigned long currentBytePosInBuffer;
+            unsigned long currentReverseBytePosInBuffer; // new
             unsigned long numBitsInBuffer;
             int  currentBitPos;
+            int  currentReverseBitPos;
             BYTE* dataPtr;
     public: 
 
@@ -19,7 +21,10 @@ class bitBufferClass {
         this->numBitsInBuffer = 0;
     
         this->dataPtr = new BYTE[capacityInBytes + 100];
-        
+
+        this->currentReverseBytePosInBuffer = capacityInBytes;
+        this->currentReverseBitPos = 0;
+
         this->resetBitBuffer(); // set counters to start positions
     }
 
@@ -150,9 +155,29 @@ class bitBufferClass {
         return bit;
     }
 
+    // new
+    BYTE getReverseBitFromBuffer(void) {
+
+        BYTE bit = ((this->dataPtr[this->currentReverseBytePosInBuffer] & (1 << this->currentReverseBitPos))) >> this->currentReverseBitPos;
+
+        // adjust counters to account for the new bit
+        // time to reset the 8bit counter?
+        if(this->currentReverseBitPos == 7) {
+           this->currentReverseBitPos = 0;
+           this->currentReverseBytePosInBuffer--;  
+        }
+        else this->currentReverseBitPos++;
+
+        return bit;
+    }
+    // /new
+
     void resetBitBuffer(void) {
         this->currentBitPos  = 8 - 1; // [xxx....] <--- put/get from left to right
         this->currentBytePosInBuffer = 0;  //
+
+        this->currentReverseBytePosInBuffer = abs((int)this->numBitsInBuffer/8);
+        this->currentReverseBitPos = abs((int)this->numBitsInBuffer%8);
     }
 
 
