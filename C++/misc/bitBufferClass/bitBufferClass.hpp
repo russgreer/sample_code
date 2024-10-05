@@ -10,6 +10,7 @@ class bitBufferClass {
             unsigned long currentBytePosInBuffer;
             unsigned long currentReverseBytePosInBuffer; // new
             unsigned long numBitsInBuffer;
+            unsigned long numBytesInBuffer;
             int  currentBitPos;
             int  currentReverseBitPos;
             BYTE* dataPtr;
@@ -36,6 +37,9 @@ class bitBufferClass {
         }
 
         memcpy(this->dataPtr, bytes, numBytes);
+        this->numBitsInBuffer = (numBytes*8);
+        this->numBytesInBuffer = numBytes;
+
     }
 
     unsigned long getCapacityInBytes(void) {
@@ -48,6 +52,10 @@ class bitBufferClass {
 
     unsigned long getTheNumberOfBitsInBuffer(void) {
         return this->numBitsInBuffer;
+    }
+
+    unsigned long getTheNumberOfBytesInBuffer(void) {
+        return this->numBytesInBuffer;
     }
 
     BYTE* getPtrToTopOfBuffer(void) {
@@ -167,6 +175,13 @@ class bitBufferClass {
            this->currentReverseBytePosInBuffer--;  
         }
         else this->currentReverseBitPos++;
+
+        // decrement the number of bits in the buffer by 1
+        // NOTE: This is a getBit not just a readBit function...
+        this->numBitsInBuffer--;
+
+        // Adjust the numBytes in Buffer
+        this->numBytesInBuffer = (this->numBitsInBuffer/8); // note this will shave off any bits not byte aligned
 
         return bit;
     }
